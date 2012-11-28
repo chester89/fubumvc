@@ -25,8 +25,7 @@ namespace FubuMVC.Windsor.Testing
              var facility = new WindsorContainerFacility(new WindsorContainer());
              configure(facility);
 
-             // A ContainerFacility cannot be considered "ready" for business until BuildFactory() has been
-             // called
+             // A ContainerFacility cannot be considered "ready" for business until BuildFactory() has been called
              return facility.BuildFactory().Get<IServiceLocator>();
          }
 
