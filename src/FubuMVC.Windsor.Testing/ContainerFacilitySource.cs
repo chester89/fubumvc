@@ -16,7 +16,6 @@ namespace FubuMVC.Windsor.Testing
              var facility = new WindsorContainerFacility(new WindsorContainer());
              configure(facility);
 
-             // A ContainerFacility cannot be considered "ready" for business until BuildFactory() has been called
              return facility.BuildFactory();
          }
 
@@ -25,7 +24,6 @@ namespace FubuMVC.Windsor.Testing
              var facility = new WindsorContainerFacility(new WindsorContainer());
              configure(facility);
 
-             // A ContainerFacility cannot be considered "ready" for business until BuildFactory() has been called
              return facility.BuildFactory().Get<IServiceLocator>();
          }
 
@@ -46,8 +44,7 @@ namespace FubuMVC.Windsor.Testing
              // but I had to have something to get at the real top level
              // behavior within the context of a StructureMap nested
              // container
-             return null; //stubbing here for now
-             //return behavior.As<NestedStructureMapContainerBehavior>().StartInnerBehavior();
+             return behavior.As<NestedWindsorContainerBehavior>().StartInnerBehavior();
          }
     }
 }

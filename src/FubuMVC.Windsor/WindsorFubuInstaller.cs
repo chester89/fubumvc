@@ -16,6 +16,7 @@ namespace FubuMVC.Windsor
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
+            container.Register(Component.For<IWindsorContainer>().ImplementedBy<WindsorContainer>());
             container.Register(Component.For<HttpRequestWrapper>().UsingFactoryMethod(c => BuildRequestWrapper()).LifestyleTransient());
             container.Register(Component.For<HttpContextBase>()
                 .ImplementedBy<HttpContextWrapper>().DependsOn(new Hashtable() { { "httpContext", BuildContextWrapper() } } ));

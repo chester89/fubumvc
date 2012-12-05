@@ -10,9 +10,7 @@ namespace FubuMVC.Windsor.Testing.Compliance
         [Test]
         public void close_an_open_generic_type_from_registration_if_nothing_explicit_is_added()
         {
-            var facility = ContainerFacilitySource.New(x => {
-                x.Register(typeof(IService<>), new ObjectDef(typeof(SimpleService<>)));
-            });
+            var facility = ContainerFacilitySource.New(x => x.Register(typeof(IService<>), new ObjectDef(typeof(SimpleService<>))));
 
             facility.Get<IService<string>>().ShouldBeOfType<SimpleService<string>>();
         }

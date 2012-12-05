@@ -12,9 +12,7 @@ namespace FubuMVC.Windsor.Testing.Compliance
         [Test]
         public void simple_ObjectDef_by_type()
         {
-            var container = ContainerFacilitySource.New(x => {
-                x.Register(typeof(IService), ObjectDef.ForType<SimpleService>());
-            });
+            var container = ContainerFacilitySource.New(x => x.Register(typeof(IService), ObjectDef.ForType<SimpleService>()));
 
             container.Get<IService>().ShouldBeOfType<SimpleService>();
         }
@@ -24,9 +22,7 @@ namespace FubuMVC.Windsor.Testing.Compliance
         {
             var service = new SimpleService();
 
-            var container = ContainerFacilitySource.New(x => {
-                x.Register(typeof (IService), ObjectDef.ForValue(service));
-            });
+            var container = ContainerFacilitySource.New(x => x.Register(typeof (IService), ObjectDef.ForValue(service)));
 
             container.Get<IService>().ShouldBeTheSameAs(service);
         }
@@ -34,10 +30,7 @@ namespace FubuMVC.Windsor.Testing.Compliance
         [Test]
         public void auto_wiring_applies_when_the_dependency_is_not_set_explicitly()
         {
-            var container = ContainerFacilitySource.New(x =>
-            {
-                x.Register(typeof(IService), ObjectDef.ForType<SimpleService>());
-            });
+            var container = ContainerFacilitySource.New(x => x.Register(typeof(IService), ObjectDef.ForType<SimpleService>()));
 
             container.Get<GuyWithService>().Service.ShouldBeOfType<SimpleService>();
         }

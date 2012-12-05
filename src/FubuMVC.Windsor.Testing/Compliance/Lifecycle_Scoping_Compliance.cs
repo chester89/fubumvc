@@ -15,11 +15,7 @@ namespace FubuMVC.Windsor.Testing.Compliance
         [Test]
         public void should_be_a_singleton_because_of_Cache_suffix()
         {
-            var container = ContainerFacilitySource.New(x => {
-                // Any concrete class suffixed with "Cache" is supposed to be a 
-                // singleton
-                x.Register(typeof (IService), ObjectDef.ForType<SingletonCache>());
-            });
+            var container = ContainerFacilitySource.New(x => x.Register(typeof (IService), ObjectDef.ForType<SingletonCache>()));
 
             // Use this static method to know whether or not a class
             // should be scoped as a singleton or by Http request
@@ -32,12 +28,7 @@ namespace FubuMVC.Windsor.Testing.Compliance
         [Test]
         public void should_be_a_singleton_because_of_Singleton_attribute()
         {
-            var container = ContainerFacilitySource.New(x =>
-            {
-                // Any concrete class suffixed with "Cache" is supposed to be a 
-                // singleton
-                x.Register(typeof(IService), ObjectDef.ForType<SingletonAttributeService>());
-            });
+            var container = ContainerFacilitySource.New(x => x.Register(typeof(IService), ObjectDef.ForType<SingletonAttributeService>()));
 
             // Use this static method to know whether or not a class
             // should be scoped as a singleton or by Http request
@@ -91,9 +82,7 @@ namespace FubuMVC.Windsor.Testing.Compliance
         public void nested_container_scoping_within_a_request()
         {
             var instance1 = ContainerFacilitySource.BuildBehavior(new ServiceArguments(), ObjectDef.ForType<Behavior1>(),
-                x => {
-                    x.Register(typeof (IService), ObjectDef.ForType<SimpleService>());
-                }).As<Behavior1>();
+                x => x.Register(typeof (IService), ObjectDef.ForType<SimpleService>())).As<Behavior1>();
 
             // "IService" is not a singleton, therefore, there should *only* be one created
             // and shared throughout the entire request.

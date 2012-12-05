@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using FubuCore.Binding;
@@ -18,61 +16,43 @@ namespace FubuMVC.Windsor
     {
         private readonly IWindsorContainer _container;
         private readonly IWindsorInstaller _installer;
-        private Action<Type, ObjectDef> _registration;
 
         public WindsorContainerFacility(IWindsorContainer container)
         {
             _container = container;
-            container.Kernel.ComponentModelBuilder.AddContributor(new SingletonEqualizer());
+            //container.Kernel.ComponentModelBuilder.AddContributor(new SingletonEqualizer());
             _installer = new WindsorFubuInstaller();
-            _registration = (serviceType, definition) =>
-                                {
-                                    //if (definition.Value == null)
-                                    //{
-                                    //    //_registry.For(serviceType).Add(new ObjectDefInstance(definition));
-                                    //    _installer.
-                                    //}
-                                    //else
-                                    //{
-                                    //    _registry.For(serviceType).Add(new ObjectInstance(definition.Value)
-                                    //    {
-                                    //        Name = definition.Name
-                                    //    });
-                                    //}
-
-                                    if (ServiceRegistry.ShouldBeSingleton(serviceType) || ServiceRegistry.ShouldBeSingleton(definition.Type) || definition.IsSingleton)
-                                    {
-                                        container.Register(Component.For(serviceType).LifestyleSingleton());
-                                    }
-                                };
         }
 
         public IServiceFactory BuildFactory()
         {
             _container.Install(_installer);
 
-            _registration = (serviceType, def) =>
-            {
-                if (def.Value != null)
-                {
-                    _container.Register(Component.For(serviceType).Instance(def.Value));
-                }
-                else
-                {
-                    //_container.Configure(x => x.For(serviceType).Add(new ObjectDefInstance(def)));
-                    //_container.Register(Component.For(serviceType)
-                    //    .Instance(new WindsorActivator(_container.Kernel.ComponentModelBuilder., _container.Kernel, null, null)));
-                }
-
-
-            };
+            
 
             return this;
         }
 
         public void Register(Type serviceType, ObjectDef def)
         {
-            _registration(serviceType, def);
+            ComponentRegistration<Object> component = null;
+            if (def.Value != null)
+            {
+                component = Component.For(serviceType).Instance(def.Value);
+            }
+            else
+            {
+                component = Component.For(serviceType).Instance(new ConfiguredInstance(def));
+            }
+            if (ServiceRegistry.ShouldBeSingleton(serviceType) || ServiceRegistry.ShouldBeSingleton(def.Type) || def.IsSingleton)
+            {
+                component.LifestyleSingleton();
+            }
+            else
+            {
+                component.LifestyleTransient();
+            }
+            _container.Register(component.Named(Guid.NewGuid().ToString()));
         }
 
         public void Inject(Type abstraction, Type concretion)
@@ -93,6 +73,11 @@ namespace FubuMVC.Windsor
         public IEnumerable<T> GetAll<T>()
         {
             return _container.ResolveAll<T>();
+        }
+
+        public void Dispose()
+        {
+            _container.Dispose();
         }
     }
 }
