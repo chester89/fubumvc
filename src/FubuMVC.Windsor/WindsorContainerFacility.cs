@@ -33,11 +33,7 @@ namespace FubuMVC.Windsor
         public void Register(Type serviceType, ObjectDef def)
         {
             var component = Component.For(serviceType).ImplementedBy(def.Type);
-            if (!def.Name.IsEmpty())
-            {
-                component = component.Named(def.Name);
-            }
-
+            
             if (ServiceRegistry.ShouldBeSingleton(serviceType) || ServiceRegistry.ShouldBeSingleton(def.Type) || def.IsSingleton)
             {
                 component.LifestyleSingleton();
@@ -45,6 +41,10 @@ namespace FubuMVC.Windsor
             else
             {
                 component.LifestyleTransient();
+            }
+            if (!def.Name.IsEmpty())
+            {
+                component = component.Named(def.Name);
             }
             _container.Register(component);
         }

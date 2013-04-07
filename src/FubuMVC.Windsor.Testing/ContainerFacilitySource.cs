@@ -21,10 +21,12 @@ namespace FubuMVC.Windsor.Testing
 
          public static IServiceLocator Services(Action<IContainerFacility> configure)
          {
-             var facility = new WindsorContainerFacility(new WindsorContainer());
+             var windsorContainer = new WindsorContainer();
+             var facility = new WindsorContainerFacility(windsorContainer);
              configure(facility);
 
-             return facility.BuildFactory().Get<IServiceLocator>();
+             //return facility.BuildFactory().Get<IServiceLocator>();
+             return new WindsorServiceLocator(windsorContainer);
          }
 
          public static IActionBehavior BuildBehavior(ServiceArguments arguments, ObjectDef behaviorDef, Action<IContainerFacility> configuration)
