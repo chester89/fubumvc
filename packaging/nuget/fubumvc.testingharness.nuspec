@@ -13,7 +13,7 @@
     <tags>web framework mvc fubumvc</tags>
     <dependencies>
       <dependency id="FubuMVC.Core" />
-      <dependency id="FubuMVC.SelfHost" />
+      <dependency id="FubuMVC.Katana" />
       <dependency id="FubuTestingSupport" />
       <dependency id="StructureMap" />
     </dependencies>

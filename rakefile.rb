@@ -1,3 +1,5 @@
+# require 'bundler/setup'
+
 COMPILE_TARGET = ENV['config'].nil? ? "Debug" : ENV['config'] # Keep this in sync w/ VS settings since Mono is case-sensitive
 CLR_TOOLS_VERSION = "v4.0.30319"
 
@@ -39,7 +41,10 @@ desc "Unit and Integration Tests"
 task :full => [:default, :integration_test]
 
 desc "Target used for the CI server"
-task :ci => [:update_all_dependencies, :default, :history, :package]
+task :ci => [:update_all_dependencies, :default, :integration_test, :history, :package]
+
+desc "Target used for CI on Mono"
+task :mono_ci => [:update_all_dependencies, :compile, :mono_unit_test, :integration_test]
 
 desc "Update the version information for the build"
 assemblyinfo :version do |asm|
@@ -83,7 +88,9 @@ def waitfor(&block)
 end
 
 desc "Compiles the app"
-task :compile => [:restore_if_missing, :clean, :version] do
+task :compile => [:restore_if_missing, :clean, :version, "docs:bottle"] do
+
+
   MSBuildRunner.compile :compilemode => COMPILE_TARGET, :solutionfile => 'src/FubuMVC.sln', :clrversion => CLR_TOOLS_VERSION
 
   copyOutputFiles "src/fubu/bin/#{COMPILE_TARGET}", "Bottles*.{dll,pdb,exe}", props[:stage]
@@ -104,7 +111,13 @@ task :test => [:unit_test]
 desc "Runs unit tests"
 task :unit_test => :compile do
   runner = NUnitRunner.new :compilemode => COMPILE_TARGET, :source => 'src', :platform => 'x86'
-  runner.executeTests ['FubuMVC.Tests', 'FubuMVC.SelfHost.Testing', 'FubuMVC.StructureMap.Testing']
+  runner.executeTests ['FubuMVC.Tests', 'FubuMVC.SelfHost.Testing', 'FubuMVC.StructureMap.Testing', 'FubuMVC.Autofac.Testing', 'FubuMVC.OwinHost.Testing']
+end
+
+desc "Runs some of the unit tests for Mono"
+task :mono_unit_test => :compile do
+  runner = NUnitRunner.new :compilemode => COMPILE_TARGET, :source => 'src', :platform => 'x86'
+  runner.executeTests ['FubuMVC.Tests', 'FubuMVC.StructureMap.Testing', 'FubuMVC.Autofac.Testing', 'FubuMVC.OwinHost.Testing']
 end
 
 desc "Runs the integration tests"

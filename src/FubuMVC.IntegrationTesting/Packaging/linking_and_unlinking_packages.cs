@@ -8,7 +8,7 @@ using FubuTestingSupport;
 
 namespace FubuMVC.IntegrationTesting.Packaging
 {
-    [TestFixture]
+    [TestFixture, Ignore("Works, but it's too unreliable")]
     public class loading_content_and_actions_from_a_linked_package : FubuRegistryHarness
     {
         protected override void initializeBottles()
@@ -47,12 +47,19 @@ ThreeController.Query()
     }
 
 
-    [TestFixture]
+    [TestFixture, Ignore("unreliable in CI")]
     public class linking_and_unlinking_packages : FubuRegistryHarness
     {
         [Test]
         public void script_linking_and_unlinking()
         {
+            removeAllLinkedPackages();
+            cleanAndRemoveAllPackages();
+            runBottles(@"
+link harness --clean-all
+
+");
+
             remote.All().EndpointsForAssembly("TestPackage1").Any().ShouldBeFalse();
             remote.All().EndpointsForAssembly("TestPackage2").Any().ShouldBeFalse();
         

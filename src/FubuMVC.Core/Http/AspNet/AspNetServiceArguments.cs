@@ -1,6 +1,7 @@
 using System;
 using System.Web.Routing;
 using FubuCore.Binding;
+using FubuMVC.Core.Http.Cookies;
 
 namespace FubuMVC.Core.Http.AspNet
 {
@@ -8,18 +9,19 @@ namespace FubuMVC.Core.Http.AspNet
     {
         public AspNetServiceArguments(RequestContext requestContext)
         {
-            With<IRequestData>(new AspNetRequestData(requestContext));
+            var currentRequest = new AspNetCurrentHttpRequest(requestContext.HttpContext.Request);
+
+            With<IRequestData>(new AspNetRequestData(requestContext, currentRequest));
             With(requestContext.HttpContext);
 
-            With<ICurrentHttpRequest>(new AspNetCurrentHttpRequest(requestContext.HttpContext.Request));
+            
+            With<ICurrentHttpRequest>(currentRequest);
 
             With<IStreamingData>(new AspNetStreamingData(requestContext.HttpContext));
 
             With<IHttpWriter>(new AspNetHttpWriter(requestContext.HttpContext.Response));
 
             With<IClientConnectivity>(new AspNetClientConnectivity(requestContext.HttpContext.Response));
-
-            With<ICookies>(new AspNetCookies(requestContext.HttpContext));
 
             With<IResponse>(new AspNetResponse(requestContext.HttpContext.Response));
         }

@@ -24,11 +24,6 @@ namespace FubuMVC.Core.Runtime.Files
             return FubuMvcPackageFacility.GetApplicationPath();
         }
 
-        public IEnumerable<ContentFolder> Folders
-        {
-            get { return _folders.Value; }
-        }
-
         // I'm okay with this finding nulls
 
         public IEnumerable<IFubuFile> FindFiles(FileSet fileSet)
@@ -48,7 +43,22 @@ namespace FubuMVC.Core.Runtime.Files
 
         public IFubuFile Find(string relativeName)
         {
-            return _files[relativeName.ToLower()];
+            return _files[relativeName.Replace("\\", "/")];
+        }
+
+        public void AssertHasFile(string relativeName)
+        {
+            relativeName = relativeName.Replace("\\", "/");
+            var file = findFile(relativeName);
+            if (file == null)
+            {
+                var files = AllFolders.SelectMany(x => FindFiles(FileSet.Deep("*"))).Select(x => x.Path);
+
+                var description = "Could not find " + relativeName;
+                files.Each(x => description += "\n" + x);
+
+                throw new ApplicationException(description);
+            }
         }
 
         public IEnumerable<ContentFolder> AllFolders
@@ -60,7 +70,7 @@ namespace FubuMVC.Core.Runtime.Files
         {
             var fileSet = new FileSet{
                 DeepSearch = true,
-                Include = name.ToLower()
+                Include = name
             };
 
             return FindFiles(fileSet).FirstOrDefault();

@@ -3,7 +3,9 @@ using System.Diagnostics;
 using FubuCore;
 using FubuMVC.Core;
 using FubuMVC.Core.Bootstrapping;
+using FubuMVC.Core.Diagnostics;
 using FubuMVC.Core.Packaging;
+using FubuMVC.Core.Registration;
 using NUnit.Framework;
 using StructureMap;
 using FubuMVC.StructureMap;
@@ -26,18 +28,6 @@ namespace FubuMVC.Tests
                 Include = "*.asset.config;*.script.config"
             }).ToList().Each(system.DeleteFile);
  
-        }
-
-        [Test]
-        public void icontainer_facility_is_registered_during_construction_for_later()
-        {
-
-            var container = new Container();
-            FubuApplication.For(new FubuRegistry()).StructureMap(container).Bootstrap();
-
-            container.GetInstance<IContainerFacility>()
-                .ShouldBeOfType<StructureMapContainerFacility>()
-                .ShouldNotBeNull();
         }
 
         [Test]
@@ -65,6 +55,23 @@ namespace FubuMVC.Tests
 
             Debug.WriteLine(description);
 
+        }
+
+        [Test]
+        public void can_use_the_default_policies()
+        {
+            var application = FubuApplication.DefaultPolicies().StructureMap(new Container()).Bootstrap();
+            var graph = application.Factory.Get<BehaviorGraph>();
+
+            graph.BehaviorFor<TargetEndpoint>(x => x.get_hello()).ShouldNotBeNull();
+        }
+    }
+
+    public class TargetEndpoint
+    {
+        public string get_hello()
+        {
+            return "Hello";
         }
     }
 }   

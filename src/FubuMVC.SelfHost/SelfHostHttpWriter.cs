@@ -33,14 +33,16 @@ namespace FubuMVC.SelfHost
         }
 
         private readonly HttpResponseMessage _response;
-        private Stream _output = new MemoryStream();
+        private readonly SelfHostCurrentHttpRequest _httpRequest;
+        private readonly Stream _output = new MemoryStream();
         private readonly Lazy<StreamWriter> _writer;
         private readonly IList<Action<StreamContent>> _modifications = new List<Action<StreamContent>>();
         private IHttpContentEncoding _encoding;
 
-        public SelfHostHttpWriter(HttpResponseMessage response)
+        public SelfHostHttpWriter(HttpResponseMessage response, SelfHostCurrentHttpRequest httpRequest)
         {
             _response = response;
+            _httpRequest = httpRequest;
             _writer = new Lazy<StreamWriter>(() => new StreamWriter(_output));
         }
 
@@ -85,6 +87,7 @@ namespace FubuMVC.SelfHost
 
         public void Redirect(string url)
         {
+            url = _httpRequest.ToFullUrl(url);
             WriteResponseCode(HttpStatusCode.Redirect, "Redirect");
             AppendHeader(HttpResponseHeaders.Location, url);
 
@@ -96,18 +99,6 @@ namespace FubuMVC.SelfHost
         {
             _response.StatusCode = status;
             _response.ReasonPhrase = description;
-        }
-
-        public void AppendCookie(HttpCookie cookie)
-        {
-            var value = new CookieHeaderValue(cookie.Name, cookie.Value);
-            value.Expires = new DateTimeOffset(cookie.Expires);
-            if(cookie.Path.IsEmpty())
-            {
-                value.Path = "/";
-            }
-
-            _response.Headers.AddCookies(new[] { value });
         }
 
         public void UseEncoding(IHttpContentEncoding encoding)

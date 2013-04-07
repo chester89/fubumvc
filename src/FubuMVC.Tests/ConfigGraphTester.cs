@@ -2,6 +2,7 @@
 using System.Reflection;
 using Bottles.PackageLoaders.Assemblies;
 using FubuMVC.Core;
+using FubuMVC.Core.Configuration;
 using FubuMVC.Core.Registration;
 using FubuMVC.Core.Registration.Diagnostics;
 using NUnit.Framework;
@@ -140,7 +141,8 @@ namespace FubuMVC.Tests
                 log.ProvenanceChain.ShouldHaveTheSameElementsAs(new ConfigurationPackProvenance(pack));
             });
 
-            graph.LogsFor(ConfigurationType.Discovery).Any().ShouldBeTrue();
+            // Changed the access overrides to settings
+            graph.LogsFor(ConfigurationType.Settings).Any().ShouldBeTrue();
 
         }
 

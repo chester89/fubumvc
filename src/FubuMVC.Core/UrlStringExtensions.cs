@@ -33,13 +33,25 @@ namespace FubuMVC.Core
             return HttpUtility.UrlDecode(encoded);
         }
 
+        /// <summary>
+        /// Converts url to an absolute url rooted at applicationUrl.  Does nothing if
+        /// url is already an absolute url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="applicationUrl"></param>
+        /// <returns></returns>
         public static string ToAbsoluteUrl(this string url, string applicationUrl)
         {
+            
+
             if (!Uri.IsWellFormedUriString(applicationUrl, UriKind.Absolute))
             {
                 throw new ArgumentOutOfRangeException("applicationUrl", "applicationUrl must be an absolute url");
             }
 
+            if (url.Contains("://")) return url;
+
+            
             url = url ?? string.Empty;
             url = url.TrimStart('~', '/').TrimStart('/');
 
@@ -58,20 +70,6 @@ namespace FubuMVC.Core
         {
             //properly encoding URI: http://blogs.msdn.com/yangxind/default.aspx
             return target != null ? Uri.EscapeDataString(target.ToString()) : string.Empty;
-        }
-
-        public static string WithQueryStringValues(this string querystring, params object[] values)
-        {
-            return querystring.ToFormat(values.Select(value => value.ToString().UrlEncoded()).ToArray());
-        }
-
-        public static string WithoutQueryString(this string querystring)
-        {
-            var questionMarkIndex = querystring.IndexOf('?');
-
-            if (questionMarkIndex == -1) return querystring;
-
-            return querystring.Substring(0, questionMarkIndex);
         }
     }
 }

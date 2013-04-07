@@ -14,6 +14,17 @@ namespace FubuMVC.Core.Registration
     /// </summary>
     public class TypePool
     {
+        /// <summary>
+        /// All types in the AppDomain in non dynamic assemblies
+        /// </summary>
+        public static TypePool AppDomainTypes()
+        {
+            var pool = new TypePool { IgnoreExportTypeFailures = true };
+            pool.AddAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.IsDynamic));
+
+            return pool;
+        }
+
         private readonly List<Assembly> _assemblies = new List<Assembly>();
         private readonly IList<Type> _types = new List<Type>();
         private bool _scanned;
@@ -46,12 +57,7 @@ namespace FubuMVC.Core.Registration
                 {
                     _scanned = true;
 
-
-
-
-                    // TODO:  Good exception message when an assembly blows up on 
-                    // GetExportedTypes()
-                    _types.AddRange(Assemblies.SelectMany(x =>
+                    _types.AddRange(Assemblies.Where(x => !x.IsDynamic).SelectMany(x =>
                     {
                         try
                         {

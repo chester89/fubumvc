@@ -48,6 +48,13 @@ namespace FubuMVC.Core
         bool HasNewEndpoint<T>();
         bool HasNewEndpoint(Type type);
 
+        /// <summary>
+        /// Find an Endpoint for the given handler type, method, and category or http method
+        /// </summary>
+        /// <param name="handlerType"></param>
+        /// <param name="method"></param>
+        /// <param name="categoryOrHttpMethod"></param>
+        /// <returns></returns>
         Endpoint EndpointFor(Type handlerType, MethodInfo method, string categoryOrHttpMethod = null);
     }
 
@@ -55,6 +62,8 @@ namespace FubuMVC.Core
     {
         public string Url { get; set; }
         public bool IsAuthorized { get; set; }
+
+        public BehaviorChain Chain { get; set; }
 
         public bool Equals(Endpoint other)
         {
@@ -138,7 +147,8 @@ namespace FubuMVC.Core
             var urlFromInput = chain.Route.CreateUrlFromInput(model);
             return new Endpoint{
                 IsAuthorized = _authorizor.Authorize(chain, model) == AuthorizationRight.Allow,
-                Url = _httpRequest.ToFullUrl(urlFromInput)
+                Url = _httpRequest.ToFullUrl(urlFromInput),
+                Chain = chain
             };
         }
     }

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using FubuCore;
 using FubuMVC.Core.Packaging;
 using FubuMVC.Core.Runtime.Files;
@@ -40,10 +41,10 @@ namespace FubuMVC.Tests.Runtime.Files
                 Include = "*.txt"
             }).Select(x => x.Path.PathRelativeTo(FubuMvcPackageFacility.GetApplicationPath()));
 
-            files.ShouldContain(@"Runtime\Files\Data\a.txt");
-            files.ShouldContain(@"Runtime\Files\Data\b.txt");
-            files.ShouldContain(@"Runtime\Files\Data\c.txt");
-            files.ShouldContain(@"Runtime\Files\Data\d.txt");
+            files.ShouldContain(@"Runtime{0}Files{0}Data{0}a.txt".ToFormat(Path.DirectorySeparatorChar));
+            files.ShouldContain(@"Runtime{0}Files{0}Data{0}b.txt".ToFormat(Path.DirectorySeparatorChar));
+            files.ShouldContain(@"Runtime{0}Files{0}Data{0}c.txt".ToFormat(Path.DirectorySeparatorChar));
+            files.ShouldContain(@"Runtime{0}Files{0}Data{0}d.txt".ToFormat(Path.DirectorySeparatorChar));
         }
 
         [Test]
@@ -56,16 +57,5 @@ namespace FubuMVC.Tests.Runtime.Files
             }).Each(f => f.ProvenancePath.ShouldEqual(FubuMvcPackageFacility.GetApplicationPath()));
         }
 
-        [Test]
-        public void can_find_files_case_insensitive()
-        {
-            var files = theFolder.FindFiles(new FileSet
-            {
-                DeepSearch = true,
-                Include = "A.txt"
-            }).Select(x => x.Path.PathRelativeTo(FubuMvcPackageFacility.GetApplicationPath()));
-
-            files.ShouldContain(@"Runtime\Files\Data\a.txt");
-        }
     }
 }

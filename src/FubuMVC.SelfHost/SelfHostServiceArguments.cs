@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Web.Routing;
 using FubuCore.Binding;
 using FubuMVC.Core.Http;
+using FubuMVC.Core.Http.Cookies;
 
 namespace FubuMVC.SelfHost
 {
@@ -14,14 +15,15 @@ namespace FubuMVC.SelfHost
             With(request);
             With(response);
 
-            var cookies = new SelfHostCookies(request, response);
-            With<IRequestData>(new SelfHostRequestData(routeData, request, cookies));
-            With<ICurrentHttpRequest>(new SelfHostCurrentHttpRequest(request));
+            var httpRequest = new SelfHostCurrentHttpRequest(request);
+            With<ICurrentHttpRequest>(httpRequest);
+
+            With<IRequestData>(new SelfHostRequestData(routeData, request, httpRequest));
+
             With<IStreamingData>(new SelfHostStreamingData(request));
-            _writer = new SelfHostHttpWriter(response);
+            _writer = new SelfHostHttpWriter(response, httpRequest);
             With<IHttpWriter>(_writer);
             With<IClientConnectivity>(new SelfHostClientConnectivity());
-            With<ICookies>(cookies);
             With<IResponse>(new SelfHostResponse(response));
         }
 

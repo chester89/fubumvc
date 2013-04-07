@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using FubuCore;
 using FubuCore.Binding;
 using FubuMVC.Core.Behaviors;
 using FubuMVC.Core.Bootstrapping;
@@ -20,30 +21,23 @@ namespace FubuMVC.Windsor
         public WindsorContainerFacility(IWindsorContainer container)
         {
             _container = container;
-            //container.Kernel.ComponentModelBuilder.AddContributor(new SingletonEqualizer());
             _installer = new WindsorFubuInstaller();
         }
 
         public IServiceFactory BuildFactory()
         {
             _container.Install(_installer);
-
-            
-
             return this;
         }
 
         public void Register(Type serviceType, ObjectDef def)
         {
-            ComponentRegistration<Object> component = null;
-            if (def.Value != null)
+            var component = Component.For(serviceType).ImplementedBy(def.Type);
+            if (!def.Name.IsEmpty())
             {
-                component = Component.For(serviceType).Instance(def.Value);
+                component = component.Named(def.Name);
             }
-            else
-            {
-                component = Component.For(serviceType).Instance(new ConfiguredInstance(def));
-            }
+
             if (ServiceRegistry.ShouldBeSingleton(serviceType) || ServiceRegistry.ShouldBeSingleton(def.Type) || def.IsSingleton)
             {
                 component.LifestyleSingleton();
@@ -52,7 +46,7 @@ namespace FubuMVC.Windsor
             {
                 component.LifestyleTransient();
             }
-            _container.Register(component.Named(Guid.NewGuid().ToString()));
+            _container.Register(component);
         }
 
         public void Inject(Type abstraction, Type concretion)

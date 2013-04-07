@@ -35,19 +35,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bottles">
-      <HintPath>..\packages\Bottles.1.0.0.415\lib\Bottles.dll</HintPath>
+      <HintPath>..\packages\Bottles\lib\Bottles.dll</HintPath>
     </Reference>
     <Reference Include="FubuCore">
-      <HintPath>..\packages\FubuCore.1.0.0.212\lib\FubuCore.dll</HintPath>
+      <HintPath>..\packages\FubuCore\lib\FubuCore.dll</HintPath>
     </Reference>
     <Reference Include="FubuLocalization">
-      <HintPath>..\packages\FubuLocalization.0.9.5.110\lib\FubuLocalization.dll</HintPath>
+      <HintPath>..\packages\FubuLocalization\lib\FubuLocalization.dll</HintPath>
     </Reference>
     <Reference Include="HtmlTags">
-      <HintPath>..\packages\HtmlTags.1.2.0.133\lib\4.0\HtmlTags.dll</HintPath>
+      <HintPath>..\packages\HtmlTags\lib\4.0\HtmlTags.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
-      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+      <HintPath>..\packages\DotNetZip\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\packages\structuremap\lib\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -71,7 +74,7 @@
     <Compile Include="Ajax\AjaxContinuationWriter.cs" />
     <Compile Include="Ajax\AjaxError.cs" />
     <Compile Include="ApplicationSettings.cs" />
-    <Compile Include="BehaviorGraphBuilder.cs" />
+    <Compile Include="Configuration\BehaviorGraphBuilder.cs" />
     <Compile Include="Behaviors\AsyncContinueWithBehavior.cs" />
     <Compile Include="Behaviors\AsyncInterceptExceptionBehavior.cs" />
     <Compile Include="Behaviors\Chrome\ChromeAttribute.cs" />
@@ -89,31 +92,43 @@
     <Compile Include="Caching\VaryByThreadCulture.cs" />
     <Compile Include="CanBeMultiplesAttribute.cs" />
     <Compile Include="Behaviors\WrappingBehavior.cs" />
-    <Compile Include="ConfigGraph.cs" />
-    <Compile Include="ConfigurationActionSet.cs" />
-    <Compile Include="ConfigurationPack.cs" />
+    <Compile Include="Configuration\ConfigGraph.cs" />
+    <Compile Include="Configuration\ConfigurationActionSet.cs" />
+    <Compile Include="Configuration\ConfigurationPack.cs" />
     <Compile Include="ConfigurationType.cs" />
     <Compile Include="ConfigurationTypeAttribute.cs" />
-    <Compile Include="DefaultConfigurationPack.cs" />
-    <Compile Include="DiscoveryActionsConfigurationPack.cs" />
-    <Compile Include="DiscoveryAttribute.cs" />
+    <Compile Include="Configuration\DefaultConfigurationPack.cs" />
+    <Compile Include="Configuration\DiscoveryActionsConfigurationPack.cs" />
+    <Compile Include="Diagnostics\AboutEndpoint.cs" />
+    <Compile Include="Diagnostics\RegisterAbout.cs" />
     <Compile Include="Endpoints\EndpointDriver.cs" />
     <Compile Include="Endpoints\EndpointFormatting.cs" />
     <Compile Include="Endpoints\EndpointInvocation.cs" />
     <Compile Include="Endpoints\HttpResponse.cs" />
     <Compile Include="Endpoints\WebRequestResponseExtensions.cs" />
-    <Compile Include="FubuApplicationDescriber.cs" />
+    <Compile Include="Diagnostics\FubuApplicationDescriber.cs" />
+    <Compile Include="FubuRuntime.cs" />
     <Compile Include="Http\AspNet\AspNetResponse.cs" />
     <Compile Include="Http\Compression\ApplyContentCompression.cs" />
     <Compile Include="Http\Compression\DeflateHttpContentEncoding.cs" />
     <Compile Include="Http\Compression\DoNotCompressAttribute.cs" />
-    <Compile Include="Http\CookieValue.cs" />
-    <Compile Include="Http\ICookieValue.cs" />
+    <Compile Include="Http\Cookies\CookieState.cs" />
+    <Compile Include="Http\Cookies\CookieValue.cs" />
+    <Compile Include="Http\Cookies\CookieParser.cs" />
+    <Compile Include="Http\Cookies\CookieValueSource.cs" />
+    <Compile Include="Http\Cookies\ICookies.cs" />
+    <Compile Include="Http\Cookies\ICookieValue.cs" />
+    <Compile Include="Http\Cookies\Segment.cs" />
+    <Compile Include="Http\HeaderValueSource.cs" />
     <Compile Include="Http\IResponse.cs" />
+    <Compile Include="IApplicationSource.cs" />
+    <Compile Include="IContainerFacilityExpression.cs" />
     <Compile Include="ImageTag.cs" />
     <Compile Include="Packaging\PackageService.cs" />
     <Compile Include="PolicyAttribute.cs" />
     <Compile Include="ReflectionExtensions.cs" />
+    <Compile Include="Registration\AccessorOverridesFinder.cs" />
+    <Compile Include="Registration\AccessorRulesExpression.cs" />
     <Compile Include="Registration\ApplicationLevelAttribute.cs" />
     <Compile Include="Registration\Conventions\CacheAttributePolicy.cs" />
     <Compile Include="Registration\Conventions\CachedPartialConvention.cs" />
@@ -125,6 +140,7 @@
     <Compile Include="Http\Compression\IHttpContentEncoding.cs" />
     <Compile Include="Registration\Conventions\DefaultRouteConventionBasedUrlPolicy.cs" />
     <Compile Include="Registration\Conventions\OutputBeforeAjaxContinuationPolicy.cs" />
+    <Compile Include="Registration\Conventions\RegisterAllSettings.cs" />
     <Compile Include="Registration\Conventions\UrlPatternAttributeOnViewModelPolicy.cs" />
     <Compile Include="Registration\Conventions\VaryByModification.cs" />
     <Compile Include="Registration\Conventions\CachingExpression.cs" />
@@ -141,7 +157,11 @@
     <Compile Include="Registration\Diagnostics\VaryByAdded.cs" />
     <Compile Include="Registration\DSL\AppliesToExpression.cs" />
     <Compile Include="Registration\Diagnostics\FilterAdded.cs" />
+    <Compile Include="Registration\FilterAttribute.cs" />
+    <Compile Include="Registration\IAccessorRulesExpression.cs" />
+    <Compile Include="Registration\IAccessorRulesRegistration.cs" />
     <Compile Include="Registration\Policies\AddToEndExpression.cs" />
+    <Compile Include="Registration\Policies\AndChainFilter.cs" />
     <Compile Include="Registration\Policies\AnyActionMatch.cs" />
     <Compile Include="Registration\Policies\ConnegPolicies.cs" />
     <Compile Include="Registration\Policies\HttpMethodFilter.cs" />
@@ -150,7 +170,7 @@
     <Compile Include="Registration\Policies\InputTypeIs.cs" />
     <Compile Include="Registration\Policies\LambdaChainFilter.cs" />
     <Compile Include="Registration\Policies\LastActionMatch.cs" />
-    <Compile Include="Registration\Policies\OrChainFilter.cs" />
+    <Compile Include="Registration\Policies\ChainPredicate.cs" />
     <Compile Include="Registration\Policies\InputTypeImplements.cs" />
     <Compile Include="Registration\Policies\IsNotPartial.cs" />
     <Compile Include="Registration\Policies\IsPartial.cs" />
@@ -169,7 +189,6 @@
     <Compile Include="Registration\SettingReplacement.cs" />
     <Compile Include="Registration\SettingsCollection.cs" />
     <Compile Include="Resources\Etags\IHeadersCache.cs" />
-    <Compile Include="Runtime\AboutEndpoint.cs" />
     <Compile Include="Runtime\Files\ContentFolder.cs" />
     <Compile Include="Runtime\Files\FubuApplicationFiles.cs" />
     <Compile Include="Runtime\Files\FubuFile.cs" />
@@ -200,11 +219,10 @@
     <Compile Include="Runtime\PartialChainSwitcher.cs" />
     <Compile Include="Runtime\PartialFactory.cs" />
     <Compile Include="Runtime\SetValueReport.cs" />
-    <Compile Include="SystemServicesPack.cs" />
+    <Compile Include="Security\NotAuthenticatedAttribute.cs" />
+    <Compile Include="Configuration\SystemServicesPack.cs" />
     <Compile Include="Http\AspNet\AspNetClientConnectivity.cs" />
-    <Compile Include="Http\AspNet\AspNetCookies.cs" />
     <Compile Include="Http\IClientConnectivity.cs" />
-    <Compile Include="MoveToDiagnosticsAttribute.cs" />
     <Compile Include="Registration\Conventions\DefaultOutputPolicy.cs" />
     <Compile Include="Registration\EndpointActionSource.cs" />
     <Compile Include="Runtime\Conditionals\Always.cs" />
@@ -238,7 +256,6 @@
     <Compile Include="Caching\WriteTextOutput.cs" />
     <Compile Include="Continuations\IRedirectable.cs" />
     <Compile Include="CoreServiceRegistry.cs" />
-    <Compile Include="DiagnosticsSettings.cs" />
     <Compile Include="FubuMode.cs" />
     <Compile Include="FubuModuleAttributePackageLoader.cs" />
     <Compile Include="Http\CurrentRequestFullUrlPropertyBinder.cs" />
@@ -253,7 +270,7 @@
     <Compile Include="Registration\Conventions\HtmlTagOutputPolicy.cs" />
     <Compile Include="Registration\Nodes\Chain.cs" />
     <Compile Include="Registration\Nodes\Node.cs" />
-    <Compile Include="RegistryImport.cs" />
+    <Compile Include="Configuration\RegistryImport.cs" />
     <Compile Include="Resources\Conneg\InputNode.cs" />
     <Compile Include="Resources\Conneg\IReader.cs" />
     <Compile Include="Resources\Conneg\OutputNode.cs" />
@@ -314,7 +331,7 @@
     <Compile Include="Http\AspNet\AspNetCurrentHttpRequest.cs" />
     <Compile Include="Http\AspNet\ASPNetObjectConversionFamily.cs" />
     <Compile Include="Http\AspNet\AspNetServiceArguments.cs" />
-    <Compile Include="Http\Cookie.cs" />
+    <Compile Include="Http\Cookies\Cookie.cs" />
     <Compile Include="Http\CurrentChain.cs" />
     <Compile Include="Http\CurrentMimeType.cs" />
     <Compile Include="Http\CurrentMimeTypeModelBinder.cs" />
@@ -328,8 +345,6 @@
     <Compile Include="Http\ICurrentChain.cs" />
     <Compile Include="Http\ICurrentHttpRequest.cs" />
     <Compile Include="Http\IRequestHeaders.cs" />
-    <Compile Include="Http\MimetypeRequestConditional.cs" />
-    <Compile Include="Http\IRequestConditional.cs" />
     <Compile Include="Http\MimeTypeList.cs" />
     <Compile Include="Http\AspNet\AspNetStreamingData.cs" />
     <Compile Include="Http\NulloHttpWriter.cs" />
@@ -513,7 +528,7 @@
     <Compile Include="Web\Security\WebSecurityContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
+    <None Include="ripple.dependencies.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

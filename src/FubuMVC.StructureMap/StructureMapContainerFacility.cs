@@ -13,6 +13,8 @@ using FubuMVC.Core.Runtime;
 using StructureMap;
 using StructureMap.Configuration.DSL;
 using StructureMap.Pipeline;
+using StructureMap.TypeRules;
+using FubuCore;
 
 namespace FubuMVC.StructureMap
 {
@@ -26,11 +28,30 @@ namespace FubuMVC.StructureMap
 
         public StructureMapContainerFacility(IContainer container)
         {
+            if (container == null) throw new ArgumentNullException("container");
+
             _container = container;
             _registry = new StructureMapFubuRegistry();
 
             _registration = (serviceType, def) =>
             {
+                if (serviceType == typeof (Registry))
+                {
+                    var registry = def.Value as Registry;
+                    if (registry != null)
+                    {
+                        _container.Configure(x => x.IncludeRegistry(registry));
+                    }
+
+                    if (def.Type.CanBeCastTo<Registry>() && def.Type.IsConcreteWithDefaultCtor())
+                    {
+                        registry = (Registry) Activator.CreateInstance(def.Type);
+                        _container.Configure(x => x.IncludeRegistry(registry));
+                    }
+
+                    return;
+                }
+
                 if (def.Value == null)
                 {
                     _registry.For(serviceType).Add(new ObjectDefInstance(def));
@@ -94,11 +115,6 @@ namespace FubuMVC.StructureMap
             _registration(serviceType, def);
         }
 
-        public void Inject(Type abstraction, Type concretion)
-        {
-            _container.Configure(x => x.For(abstraction).Add(concretion));
-        }
-
         public T Get<T>()
         {
             return _container.GetInstance<T>();
@@ -142,6 +158,10 @@ namespace FubuMVC.StructureMap
             return this;
         }
 
+        public void Dispose()
+        {
+            _container.Dispose();
+        }
     }
 
 }

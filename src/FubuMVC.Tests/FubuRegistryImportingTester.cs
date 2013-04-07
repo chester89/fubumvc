@@ -10,6 +10,7 @@ using FubuMVC.Core.Registration;
 using FubuMVC.Core.Runtime;
 using FubuTestingSupport;
 using NUnit.Framework;
+using Cookie = FubuMVC.Core.Http.Cookies.Cookie;
 
 namespace FubuMVC.Tests
 {
@@ -65,6 +66,11 @@ namespace FubuMVC.Tests
                 throw new NotImplementedException();
             }
 
+            public void AppendCookie(Cookie cookie)
+            {
+                throw new NotImplementedException();
+            }
+
             public IRecordedOutput Record(Action action)
             {
                 throw new NotImplementedException();
@@ -80,11 +86,6 @@ namespace FubuMVC.Tests
                 throw new NotImplementedException();
             }
 
-            public void AppendCookie(HttpCookie cookie)
-            {
-                throw new NotImplementedException();
-            }
-
             public void AppendHeader(string key, string value)
             {
                 throw new NotImplementedException();
@@ -96,11 +97,6 @@ namespace FubuMVC.Tests
             }
 
             public void WriteResponseCode(HttpStatusCode status, string description = null)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Dispose()
             {
                 throw new NotImplementedException();
             }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using FubuCore;
+using FubuMVC.Core.Configuration;
 using FubuMVC.Core.Registration;
 using FubuMVC.Core.Registration.Conventions;
 using FubuMVC.Core.Registration.DSL;
@@ -26,7 +27,6 @@ namespace FubuMVC.Core
     public partial class FubuRegistry
     {
         private readonly IList<Type> _importedTypes = new List<Type>();
-        private readonly ActionMethodFilter _methodFilter = new ActionMethodFilter();
         private readonly Assembly _applicationAssembly = TypePool.FindTheCallingAssembly();
         private readonly ConfigGraph _config = new ConfigGraph();
 
@@ -38,6 +38,15 @@ namespace FubuMVC.Core
         public FubuRegistry(Action<FubuRegistry> configure) : this()
         {
             configure(this);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assembly">The primary assembly for this application used in type scanning conventions and policies</param>
+        public FubuRegistry(Assembly assembly) : this()
+        {
+            _applicationAssembly = assembly;
         }
 
         internal ConfigGraph Config
